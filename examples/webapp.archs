@@ -1,0 +1,36 @@
+project WebApplication
+
+boundary Client {
+  element actor "User" as user
+  element frontend "Web App" as webapp {
+    tech "React"
+    owner "Frontend Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+boundary Backend {
+  element service "API" as api {
+    tech "Laravel"
+    owner "Backend Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "PostgreSQL" as db {
+    owner "Database Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+relation user -> webapp : uses
+relation webapp -> api {
+  protocol "REST"
+  tags [sync, public]
+}
+relation api -> db {
+  protocol "PostgreSQL"
+  tags [sync]
+}

@@ -1,0 +1,26 @@
+project SolagoPortal
+
+boundary Public {
+  element actor Customer
+
+  element frontend WebApp {
+    tech "React"
+    owner "Frontend Team"
+    description "Customer Portal"
+  }
+}
+
+boundary Internal {
+  element backend API {
+    tech "Laravel"
+    owner "Backend Team"
+  }
+
+  element database PostgreSQL {
+    engine "PostgreSQL"
+  }
+}
+
+relation Customer -> WebApp : uses
+relation WebApp -> API : REST
+relation API -> PostgreSQL : reads/writes

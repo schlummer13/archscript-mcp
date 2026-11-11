@@ -1,0 +1,43 @@
+project EventDrivenArchitecture
+
+element frontend "Admin UI" as admin_ui {
+  owner "Frontend Team"
+  monitoring "Grafana"
+  tags [production]
+}
+
+element service "Command API" as command_api {
+  owner "Platform Team"
+  monitoring "Grafana"
+  tags [critical, production]
+}
+
+element event_bus "Event Bus" as event_bus {
+  tech "Kafka"
+  owner "Platform Team"
+  monitoring "Grafana"
+  tags [critical, production]
+}
+
+element service "Projection Worker" as projection_worker {
+  owner "Platform Team"
+  monitoring "Grafana"
+  tags [production]
+}
+
+element database "Read Model" as read_model {
+  owner "Platform Team"
+  monitoring "Grafana"
+  tags [production]
+}
+
+relation admin_ui -> command_api : REST
+relation command_api -> event_bus {
+  label "publishes Commands"
+  protocol "Kafka"
+}
+relation projection_worker -> event_bus {
+  label "subscribes Events"
+  protocol "Kafka"
+}
+relation projection_worker -> read_model : writes

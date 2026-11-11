@@ -1,0 +1,42 @@
+project DDDArchitecture
+
+domain CustomerManagement {
+  element service "Customer Service" as customer_service {
+    owner "Customer Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "Customer Database" as customer_db {
+    owner "Customer Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+domain Ordering {
+  element service "Order Service" as order_service {
+    owner "Order Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "Order Database" as order_db {
+    owner "Order Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+domain Billing {
+  element service "Billing Service" as billing_service {
+    owner "Billing Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+}
+
+relation customer_service -> customer_db : owns
+relation order_service -> order_db : owns
+relation order_service -> customer_service : reads customer profile
+relation order_service -> billing_service : requests payment

@@ -1,0 +1,29 @@
+project Demo
+
+domain CustomerManagement {
+  element frontend "Web App" as webapp {
+    owner "Frontend Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+
+  element service "Customer API" as api {
+    owner "Platform Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database PostgreSQL as db {
+    owner "Database Team"
+    monitoring "Grafana"
+  }
+}
+
+relation webapp -> api {
+  protocol "REST"
+  tags [sync, public]
+}
+
+relation api -> db {
+  protocol "PostgreSQL"
+}

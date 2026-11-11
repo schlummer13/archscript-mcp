@@ -1,0 +1,51 @@
+project MicroservicesPlatform
+
+domain Identity {
+  element service "Auth Service" as auth {
+    tech "Rust"
+    owner "Identity Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "Auth Database" as auth_db {
+    owner "Identity Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+domain Billing {
+  element service "Billing Service" as billing {
+    tech "Go"
+    owner "Billing Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "Billing Database" as billing_db {
+    owner "Billing Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+}
+
+boundary Messaging {
+  element event_bus "Event Bus" as event_bus {
+    tech "Kafka"
+    owner "Platform Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+}
+
+relation auth -> auth_db : PostgreSQL
+relation billing -> billing_db : PostgreSQL
+relation auth -> event_bus {
+  protocol "Kafka"
+  label "publishes UserCreated"
+}
+relation billing -> event_bus {
+  protocol "Kafka"
+  label "subscribes UserCreated"
+}

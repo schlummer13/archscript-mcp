@@ -1,0 +1,67 @@
+project DockerShop
+
+# Deployment: a cluster with two servers, Docker containers on each server
+# and the services running inside the containers.
+
+cluster Production {
+  platform "Docker Swarm"
+  region "eu-central"
+
+  server "app-01" {
+    os "Ubuntu 24.04"
+    ip "10.0.0.11"
+
+    container web {
+      image "nginx:1.27"
+      ports "443:443"
+      element gateway "Reverse Proxy" as proxy {
+        tech "nginx"
+        owner "Platform Team"
+      }
+    }
+
+    container api {
+      image "shop/api:1.4"
+      ports "8080"
+      element service "Order API" as orders {
+        tech "Rust"
+        owner "Orders Team"
+        monitoring "Grafana"
+      }
+    }
+  }
+
+  server "db-01" {
+    os "Debian 13"
+    ip "10.0.0.21"
+
+    container postgres {
+      image "postgres:17"
+      volumes "/srv/pg:/var/lib/postgresql/data"
+      element database "Orders DB" as orders_db {
+        tech "PostgreSQL"
+        owner "Orders Team"
+      }
+    }
+
+    container redis {
+      image "redis:7"
+      element cache "Session Cache" as sessions {
+        tech "Redis"
+        owner "Platform Team"
+      }
+    }
+  }
+}
+
+element user "Customer" as customer
+element frontend "Web Shop" as shop {
+  tech "React"
+  owner "Web Team"
+}
+
+relation customer -> shop : HTTPS
+relation shop -> proxy : HTTPS
+relation proxy -> orders : HTTP
+relation orders <-> orders_db : SQL
+relation orders -> sessions : RESP

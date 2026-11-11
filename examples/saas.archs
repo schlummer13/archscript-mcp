@@ -1,0 +1,48 @@
+project SaaSPlatform
+
+environment Production {
+  element cdn "CDN" as cdn {
+    tech "Cloudflare"
+    owner "Platform Team"
+    monitoring "Cloudflare"
+    tags [production]
+  }
+
+  element frontend "Customer Portal" as portal {
+    tech "React"
+    owner "Frontend Team"
+    monitoring "Grafana"
+    tags [production]
+  }
+
+  element gateway "API Gateway" as gateway {
+    owner "Platform Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element service "Tenant API" as tenant_api {
+    owner "Backend Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element database "Tenant Database" as tenant_db {
+    owner "Database Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+
+  element identity_provider "Identity Provider" as idp {
+    tech "Keycloak"
+    owner "Security Team"
+    monitoring "Grafana"
+    tags [critical, production]
+  }
+}
+
+relation cdn -> portal : serves
+relation portal -> gateway : HTTPS
+relation gateway -> tenant_api : REST
+relation tenant_api -> tenant_db : PostgreSQL
+relation portal -> idp : OIDC
