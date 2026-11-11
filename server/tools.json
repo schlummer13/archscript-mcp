@@ -1,0 +1,205 @@
+[
+  {
+    "name": "archscript_guide",
+    "title": "ArchScript language guide",
+    "description": "The ArchScript language: syntax, element types, containers (domain, boundary, environment, cluster, server, container), relations, properties, rules, custom types and the edit operations. Read this before writing ArchScript.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_documents",
+    "title": "List open documents",
+    "description": "Open ArchScript documents with id, file name, project name, validity and size. The first entry is the frontmost window.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_document",
+    "title": "Read a document",
+    "description": "Source code (with line numbers), diagnostics, metrics and the structure (containers, elements, relations with their indices) of a document.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "create_document",
+    "title": "Create a document",
+    "description": "Opens a new ArchScript window with the given source and returns its id and diagnostics.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Complete ArchScript source."
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "set_document_source",
+    "title": "Replace a document's source",
+    "description": "Replaces the whole source of a document (one undoable step in the user's window). Returns diagnostics.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        },
+        "source": {
+          "type": "string",
+          "description": "Complete new ArchScript source."
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "edit_document",
+    "title": "Edit a document",
+    "description": "Applies structured edit operations in order (one undoable step). Each operation is an object with \"op\" and its fields:\nadd_element {kind, name, container?} · add_relation {from, to, label?, bidirectional?} · set_property {element, key, value|null} · rename {element, name} · change_id {element, id} · change_kind {element, kind} · set_tags {element, tags[]} · move_to_container {element, container|null} · delete_element {element} · set_relation_label {relation, label|null} · set_relation_property {relation, key, value|null} · set_relation_direction {relation, direction: forward|reverse|both} · delete_relation {relation} · add_container {kind, name, container?} · rename_container {container, name} · delete_container {container} (keeps contents) · set_container_property {container, key, value|null} · set_container_color {container, color|null}.\nElements are referenced by id, relations by index (see get_document), containers by key like \"cluster:Prod/server:app-01\".",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "Edit operations, applied in order."
+        }
+      },
+      "required": [
+        "operations"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "validate",
+    "title": "Validate source",
+    "description": "Compiles ArchScript source without opening or changing a document: diagnostics, metrics and review score.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "review",
+    "title": "Architecture review",
+    "description": "Score, grade, metadata coverage, coupling and all rule findings of a document.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "render_diagram",
+    "title": "Render the diagram",
+    "description": "The document's diagram as a PNG image (the last valid state).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "export",
+    "title": "Export",
+    "description": "Generated output of a valid document: mermaid, plantuml, markdown (documentation), json (model) or terraform_aws / terraform_azure / terraform_gcp.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "description": "Document id (e.g. doc1), file name or project name. Omit for the frontmost document."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "mermaid",
+            "plantuml",
+            "markdown",
+            "json",
+            "terraform_aws",
+            "terraform_azure",
+            "terraform_gcp"
+          ]
+        }
+      },
+      "required": [
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  }
+]

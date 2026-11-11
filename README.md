@@ -32,9 +32,10 @@ Claude Desktop, Claude Code and other MCP clients can read the architectures you
 have open, change them with precise, structured edits, validate them and look at
 the rendered diagram. Every change appears live in the window and can be undone.
 
-> This repository contains the documentation, configuration examples and example
-> models for the ArchScript MCP server. ArchScript itself is a closed-source app,
-> available on the Mac App Store. The browser Playground is free.
+> This repository contains the documentation, configuration examples, example
+> models and a small open-source stdio bridge ([`server/`](server)) for the
+> ArchScript MCP server. ArchScript itself is a closed-source app, available on
+> the Mac App Store. The browser Playground is free.
 
 ## What Claude can do
 
@@ -112,7 +113,20 @@ ArchScript when Claude needs it.
 
 Any client that supports **Streamable HTTP** can connect to
 `http://127.0.0.1:47621/mcp` with the header `Authorization: Bearer <token>`.
-Clients that only support stdio can use the helper as shown above.
+Clients that only support stdio can use the helper as shown above, or the
+open-source Node bridge in [`server/`](server) (Node 18+, no dependencies):
+
+```json
+{
+  "mcpServers": {
+    "archscript": {
+      "command": "node",
+      "args": ["/path/to/archscript-mcp/server/index.js"],
+      "env": { "ARCHSCRIPT_TOKEN": "<token from Settings → AI>" }
+    }
+  }
+}
+```
 
 ## Privacy and security
 
@@ -182,6 +196,6 @@ welcome too.
 
 ## License
 
-The documentation, configuration snippets and example models in this repository
-are available under the [MIT License](LICENSE). ArchScript for Mac and the
+The documentation, configuration snippets, example models and the bridge in
+[`server/`](server) are available under the [MIT License](LICENSE). ArchScript for Mac and the
 ArchScript core are proprietary software.
