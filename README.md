@@ -73,6 +73,16 @@ Requirements: **ArchScript for Mac** (macOS 14+) with **ArchScript Pro**
 2. Copy the snippet for your client from that screen. It already contains your
    personal access token.
 
+### Claude Desktop: one-click install (recommended)
+
+1. Download **[archscript.mcpb](https://github.com/schlummer13/archscript-mcp/releases/latest/download/archscript.mcpb)** from the latest release.
+2. Double-click it, or drag it into Claude Desktop → Settings → Extensions.
+3. Paste the access token from ArchScript → Settings → AI.
+
+The extension contains no ArchScript code. It holds a manifest and a small
+launcher script ([`mcpb/server/archscript-mcp`](mcpb/server/archscript-mcp))
+that finds ArchScript for Mac and starts its bundled helper.
+
 ### Claude Code
 
 ```bash
@@ -80,7 +90,7 @@ claude mcp add --transport http archscript http://127.0.0.1:47621/mcp \
   --header "Authorization: Bearer <token from Settings → AI>"
 ```
 
-### Claude Desktop
+### Claude Desktop (manual)
 
 Add the snippet to `claude_desktop_config.json`, then restart Claude:
 

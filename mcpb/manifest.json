@@ -1,0 +1,65 @@
+{
+  "manifest_version": "0.3",
+  "name": "archscript",
+  "display_name": "ArchScript",
+  "version": "1.0.0",
+  "description": "Plan and review software architecture as code — Claude edits the live diagram in ArchScript for Mac.",
+  "long_description": "ArchScript is an architecture-as-code tool for macOS. This extension connects Claude to the architectures open in ArchScript for Mac: Claude can read them, change them with structured edits (elements, relations, containers, properties), validate them against architecture rules, get the review score, render the diagram and export Mermaid, PlantUML, Markdown, JSON or Terraform. Every change appears live in the window and is one undo step.\n\nRequires ArchScript for Mac with ArchScript Pro (14-day free trial). Turn on Settings → AI → Allow AI assistants and paste the access token shown there. Local only: the app's server listens on 127.0.0.1 and requires the token.",
+  "author": {
+    "name": "Florian Fenzl",
+    "url": "https://archscript.dev"
+  },
+  "homepage": "https://archscript.dev/guides/ai-assistants/",
+  "documentation": "https://github.com/schlummer13/archscript-mcp",
+  "support": "https://github.com/schlummer13/archscript-mcp/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schlummer13/archscript-mcp"
+  },
+  "icon": "icon.png",
+  "server": {
+    "type": "binary",
+    "entry_point": "server/archscript-mcp",
+    "mcp_config": {
+      "command": "${__dirname}/server/archscript-mcp",
+      "args": [],
+      "env": {
+        "ARCHSCRIPT_TOKEN": "${user_config.token}",
+        "ARCHSCRIPT_PORT": "${user_config.port}"
+      }
+    }
+  },
+  "tools": [
+    { "name": "archscript_guide", "description": "Language reference, element types and rules" },
+    { "name": "list_documents", "description": "Open documents with id, name and validity" },
+    { "name": "get_document", "description": "Source with line numbers and a structure outline" },
+    { "name": "create_document", "description": "Create a new architecture from ArchScript source" },
+    { "name": "set_document_source", "description": "Replace a document's source" },
+    { "name": "edit_document", "description": "Structured edits to elements, relations, containers, properties and tags" },
+    { "name": "validate", "description": "Diagnostics for a document" },
+    { "name": "review", "description": "Review score, grade and rule findings" },
+    { "name": "render_diagram", "description": "The diagram as an image" },
+    { "name": "export", "description": "Mermaid, PlantUML, Markdown, JSON or Terraform" }
+  ],
+  "keywords": ["architecture", "software-architecture", "architecture-as-code", "diagrams", "c4", "docker", "terraform", "mermaid", "plantuml"],
+  "license": "MIT",
+  "compatibility": {
+    "platforms": ["darwin"]
+  },
+  "user_config": {
+    "token": {
+      "type": "string",
+      "title": "Access token",
+      "description": "Copy it from ArchScript → Settings → AI (turn on “Allow AI assistants” first).",
+      "sensitive": true,
+      "required": true
+    },
+    "port": {
+      "type": "string",
+      "title": "Port",
+      "description": "Only change this if you changed the port in ArchScript.",
+      "default": "47621",
+      "required": false
+    }
+  }
+}

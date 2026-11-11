@@ -1,0 +1,30 @@
+#!/bin/sh
+# ArchScript MCP launcher for MCPB.
+# Finds ArchScript for Mac and starts its bundled stdio helper, which forwards
+# MCP messages to the app's local server (127.0.0.1, bearer token).
+# This bundle contains no ArchScript code — it only locates the installed app.
+
+helper=""
+try() {
+  if [ -z "$helper" ] && [ -x "$1/Contents/MacOS/archscript-mcp" ]; then
+    helper="$1/Contents/MacOS/archscript-mcp"
+  fi
+}
+try "/Applications/ArchScript.app"
+try "$HOME/Applications/ArchScript.app"
+if [ -z "$helper" ]; then
+  # Installed somewhere else: ask Spotlight (paths may contain spaces).
+  found=$(mdfind "kMDItemCFBundleIdentifier == 'dev.archscript.mac'" 2>/dev/null | head -n 1)
+  [ -n "$found" ] && try "$found"
+fi
+
+if [ -z "$helper" ]; then
+  echo "ArchScript for Mac was not found. Install it from the Mac App Store: https://archscript.dev/mac/" >&2
+  exit 1
+fi
+
+if [ -z "$ARCHSCRIPT_TOKEN" ]; then
+  echo "No access token. Copy it from ArchScript → Settings → AI and paste it into the extension settings." >&2
+fi
+
+exec "$helper" --token "$ARCHSCRIPT_TOKEN" --port "${ARCHSCRIPT_PORT:-47621}"

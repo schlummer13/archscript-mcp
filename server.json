@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.schlummer13/archscript-mcp",
+  "title": "ArchScript",
+  "description": "Plan and review software architecture as code — Claude edits the live diagram in ArchScript for Mac.",
+  "version": "1.0.0",
+  "websiteUrl": "https://archscript.dev/guides/ai-assistants/",
+  "repository": {
+    "url": "https://github.com/schlummer13/archscript-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/schlummer13/archscript-mcp/releases/download/v1.0.0/archscript.mcpb",
+      "fileSha256": "d6621557eab94be9b5cc65ba54b2f1a963a3bf3ca214da369fc8209a06bd0693",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ARCHSCRIPT_TOKEN",
+          "description": "Access token from ArchScript → Settings → AI",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
